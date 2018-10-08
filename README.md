@@ -1,5 +1,9 @@
 # SQL-Initializer
-Microservice for schema development, deployment and seeding of SQL databases as part of the initialization or provisioning process of a larger platform
+Microservice for schema development, deployment and seeding of SQL databases as part of the initialization or provisioning process of a larger platform.
+
+A console project runs SQL scripts (grouped in batches) against a SQL database in a sequence that includes pre-scripts, tables, seeds and post scripts.
+
+In this sample application the SQL Server is hosted within a Docker container.
 
 # SQL Script Management
 All SQL scripts are managed within the 'sql/scripts' folder of the 'sql-initializer' project. The scripts are run in batches grouped within folders in the following order:
