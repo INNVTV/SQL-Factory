@@ -1,0 +1,11 @@
+version: "3"
+services:
+    console:
+        build: .
+        depends_on:
+            - db
+    db:
+        image: "microsoft/mssql-server-linux"
+        environment:
+            SA_PASSWORD: "password"
+            ACCEPT_EULA: "Y"
