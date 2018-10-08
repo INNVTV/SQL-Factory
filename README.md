@@ -6,7 +6,7 @@ A console project runs SQL scripts (grouped in batches) against a SQL database i
 In this sample application the SQL Server is hosted within a Docker container.
 
 # SQL Script Management
-All SQL scripts are managed within the 'sql/scripts' folder of the 'sql-initializer' project. The scripts are run in batches grouped within folders in the following order:
+All SQL scripts are managed within the 'sql/scripts' folder. The scripts are run in batches grouped within folders in the following order:
 
 * pre
 * tables
