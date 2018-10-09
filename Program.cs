@@ -1,5 +1,6 @@
 ﻿using System;
 using SqlInitializer.Sql;
+using SqlInitializer.Models;
 
 namespace SqlInitializer
 {
@@ -9,16 +10,18 @@ namespace SqlInitializer
         {
             Console.WriteLine("Starting initializer...");
 
-            var success = Initializer.InitializeDatabase("", "", "");
+            var sqlSettings = new SqlSettings{server = "", userName = "", password = ""};
 
-            if(success)
+            var response = Initializer.InitializeDatabase(sqlSettings);
+
+            if(response.isSuccess)
             {
                 Console.WriteLine("Initialization complete!");
                 Console.WriteLine("Exiting...");
             }
             else
             {
-
+                Console.WriteLine(response.errorMessage);
             }
 
             
