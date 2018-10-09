@@ -6,7 +6,12 @@ namespace sql_initializer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting initializer");
+            Console.WriteLine("Starting initializer...");
+
+            Console.ReadLine();
+
+            Console.WriteLine("Initialization complete!");
+            Console.WriteLine("Exiting...");
         }
     }
 }

@@ -10,8 +10,8 @@ All SQL scripts are managed within the 'sql/scripts' folder. The scripts are run
 
 * pre
 * tables
-* seeds
 * post
+* seeds
 
 This allows you to easily manage all your SQL scripts in sequential batches.
 
