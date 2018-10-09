@@ -6,6 +6,8 @@ services:
             - db
     db:
         image: "microsoft/mssql-server-linux"
+        ports:
+            - 1433:1433
         environment:
-            SA_PASSWORD: "P@ssword1"
+            SA_PASSWORD: "P@ssword1" #defaults: username: 'SA' | server: 'localhost'
             ACCEPT_EULA: "Y"

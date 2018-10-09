@@ -9,4 +9,4 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-ENTRYPOINT ["dotnet", "out/sql-initializer.dll"]
+ENTRYPOINT ["dotnet", "out/SqlInitializer.dll"]

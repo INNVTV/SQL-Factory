@@ -1,6 +1,7 @@
 ﻿using System;
+using SqlInitializer.Sql;
 
-namespace sql_initializer
+namespace SqlInitializer
 {
     class Program
     {
@@ -8,10 +9,19 @@ namespace sql_initializer
         {
             Console.WriteLine("Starting initializer...");
 
-            Console.ReadLine();
+            var success = Initializer.InitializeDatabase("", "", "");
 
-            Console.WriteLine("Initialization complete!");
-            Console.WriteLine("Exiting...");
+            if(success)
+            {
+                Console.WriteLine("Initialization complete!");
+                Console.WriteLine("Exiting...");
+            }
+            else
+            {
+
+            }
+
+            
         }
     }
 }
