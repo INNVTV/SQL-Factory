@@ -8,6 +8,10 @@
 
   <ItemGroup>
     <PackageReference Include="EnterpriseLibrary.TransientFaultHandling.Data.NetCore" Version="6.0.1312" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
     <PackageReference Include="system.data.sqlclient" Version="4.5.1" />
   </ItemGroup>
 

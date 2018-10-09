@@ -2,6 +2,7 @@ version: "3"
 services:
     console:
         build: .
+        env_file: .env
         depends_on:
             - db
     db:
