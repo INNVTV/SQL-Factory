@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
 using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
-using System.Reflection;
 
 namespace SqlInitializer.Sql
 {
@@ -15,7 +14,6 @@ namespace SqlInitializer.Sql
         public static DataAccessResponse InitializeDatabase(SqlSettings sqlSettings, string databaseName)
         {
             //Set retry policy
-            /* 
             var retryPolicy = new RetryPolicy<DefaultRetryStrategy>(5, new TimeSpan(0, 0, 3));
 
             var retryInterval = TimeSpan.FromSeconds(3);
@@ -25,28 +23,31 @@ namespace SqlInitializer.Sql
             RetryManager.SetDefault(manager);
 
             //Connect to 'master'
-            ReliableSqlConnection sqlConnection = new ReliableSqlConnection(
+            ReliableSqlConnection sqlConnectionMaster = new ReliableSqlConnection(
                 _generateConnectionString(sqlSettings, "master")
                 , retryPolicy);
 
             //Create Database:
+            //TODO: Check if database exists!
             var sqlStatement = new StringBuilder();
             sqlStatement.Append("Create Database ");
             sqlStatement.Append(databaseName);
 
-            SqlCommand sqlCommand = sqlConnection.CreateCommand();
+            SqlCommand sqlCommand = sqlConnectionMaster.CreateCommand();
 			sqlCommand.CommandText = sqlStatement.ToString();
             sqlCommand.Connection.OpenWithRetry();
             int result = sqlCommand.ExecuteNonQueryWithRetry(); // returns Int indicating number of rows affected
             sqlCommand.Connection.Close();
 
-            if(result > 0)
-            {*/
-                //var assembly = Assembly.GetAssembly(GetType());
-                var assembly = Assembly.GetAssembly(typeof(Assembly));
-                var assemblyName = assembly.GetName().Name;
+            //Console.WriteLine(result);
+            //TODO: Better way to check if db created
 
-                var resourceNames = assembly.GetManifestResourceNames();
+            if(result <= 0)
+            {           
+                //Connect to '<databaseName>'
+                ReliableSqlConnection sqlConnection = new ReliableSqlConnection(
+                    _generateConnectionString(sqlSettings, databaseName)
+                , retryPolicy);
 
                 //List of script folders to be run (in order)
                 var scriptsOrder = new List<string>();
@@ -54,27 +55,23 @@ namespace SqlInitializer.Sql
                 scriptsOrder.Add("Tables");
                 scriptsOrder.Add("Post");
                 scriptsOrder.Add("Procedures");
-                scriptsOrder.Add("Seed");
+                scriptsOrder.Add("Seeds");
 
                 //Loop through all scripts within each folder and run them against the database connection:
-                //FYI: .sql Files must be saved as ANSI
-                //FYI: .sql Files must be set as "Embedded Resource" & "CopyAlways" in Properties
                 foreach (string folder in scriptsOrder)
                 {
-                    Console.WriteLine(assemblyName);
+                    var files = Directory.GetFiles(Directory.GetCurrentDirectory() + "/Sql/Scripts/" + folder);
+                    foreach(string file in files)
+                    {
+                        Console.WriteLine("Running script: '" + file + "'");
 
-                    foreach (var sqlScript in resourceNames.Where(o => o.StartsWith(assemblyName + "SqlInitializer.Sql.Scripts." + folder)))
-                    {                      
-                        using (var stream = assembly.GetManifestResourceStream(sqlScript))
-                        using (var reader = new StreamReader(stream))
+                        var fileData = System.IO.File.ReadAllText(file);
+
+                        var split = SplitSqlStatements(fileData);
+                        foreach (var s in split)
                         {
-                            var split = SplitSqlStatements(reader.ReadToEnd());
-                            Console.WriteLine(split);
-
-                            foreach (var s in split)
-                            {
-                                //executeNonQueryStatement(s, sqlConnection);
-                            }
+                            Console.WriteLine(s);
+                            executeNonQueryStatement(s, sqlConnection);
                         }
                     }
                 }
@@ -83,13 +80,13 @@ namespace SqlInitializer.Sql
                     isSuccess = true,
                     errorMessage = ""
                 };
-            //}
-            //else{
-                //return new DataAccessResponse{
-                    //isSuccess = false,
-                    //errorMessage = "Failed to create database '" + databaseName + "'"
-                //};
-           // }
+            }
+            else{
+                return new DataAccessResponse{
+                    isSuccess = false,
+                    errorMessage = "Failed to create database '" + databaseName + "'"
+                };
+            }
 
 
         }
@@ -174,8 +171,12 @@ namespace SqlInitializer.Sql
                     sqlCommandGenerateTables.ExecuteNonQueryWithRetry();
                     sqlCommandGenerateTables.Connection.Close();
                 }
-                catch
+                catch(Exception e)
                 {
+                    Console.WriteLine("ExecuteNonQueryException: '" + e.Message + "'");
+                    Console.WriteLine("ADO.NET Connection Pooling may require a retry.");
+                    Console.WriteLine("Trying again....");
+
                     //Try again (ADO.NET Connection Pooling may require a retry)
                     sqlCommandGenerateTables.Connection.Close();
 

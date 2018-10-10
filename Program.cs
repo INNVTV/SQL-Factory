@@ -12,22 +12,9 @@ namespace SqlInitializer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Directory.GetCurrentDirectory() + "/Sql/Scripts/Post");
-            var files = Directory.GetFiles(Directory.GetCurrentDirectory() + "/Sql/Scripts/Tables");
-
-            foreach(string file in files)
-            {
-                Console.WriteLine(file);
-                var fileData = System.IO.File.ReadAllText(file);
-                Console.WriteLine(fileData);
-            }
             
-
-
-            /*
             //Sleep to allow SQL Container time to start up
-            //Thread.Sleep(20000);
-
+            Thread.Sleep(20000);
             //TODO: Make it check and retry until resource ready.
 
             Console.WriteLine("Starting initializer...");
@@ -38,12 +25,14 @@ namespace SqlInitializer
             if(response.isSuccess)
             {
                 Console.WriteLine("Initialization complete!");
+                //Send message to other microservices...
+                
                 Console.WriteLine("Exiting...");
             }
             else
             {
                 Console.WriteLine(response.errorMessage);
-            }          */
+            }          
         }
 
         public static SqlSettings GetSqlSettings()
