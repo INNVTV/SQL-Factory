@@ -10,5 +10,5 @@ services:
         ports:
             - 1433:1433
         environment:
-            SA_PASSWORD: "P@ssword1" #defaults: username: 'sa' | server: 'localhost' (in Sql Studio), 'db' (in compose)
+            SA_PASSWORD: "P@ssword1" #defaults: username: 'sa' | server: 'localhost' (in Sql Studio), 'db' (name of compose service)
             ACCEPT_EULA: "Y"
