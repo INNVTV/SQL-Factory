@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using SqlInitializer.Sql;
 using SqlInitializer.Models;
+using System.Threading;
 
 namespace SqlInitializer
 {
@@ -11,10 +12,13 @@ namespace SqlInitializer
     {
         static void Main(string[] args)
         {
+            //Sleep to allow SQL Container time to start up
+            Thread.Sleep(20000);
+
             Console.WriteLine("Starting initializer...");
        
             var sqlSettings = GetSqlSettings();
-            var response = Initializer.InitializeDatabase(sqlSettings);          
+            var response = Initializer.InitializeDatabase(sqlSettings, "InitializerDb3");          
 
             if(response.isSuccess)
             {
@@ -29,7 +33,7 @@ namespace SqlInitializer
 
         public static SqlSettings GetSqlSettings()
         {
-            //Get configuration from Docker (via appsettings.json)
+            //Get configuration from Docker/Compose (via .env and appsettings.json)
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
