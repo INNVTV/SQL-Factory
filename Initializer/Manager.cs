@@ -11,16 +11,16 @@ namespace SqlInitializer
 {
     public static class Manager
     {
-        public static DataAccessResponse InitializeDatabase(SqlSettings sqlSettings, string databaseName)
+        public static DataAccessResponse InitializeDatabase(SqlSettings sqlSettings, AppSettings appSettings)
         {
             var retryPolicy = Initializer.Helpers.RetryPolicies.GetRetryPolicy();
 
-            var createDatabaseResult = CreateDatabaseOnMaster(sqlSettings, databaseName, retryPolicy);
+            var createDatabaseResult = CreateDatabaseOnMaster(sqlSettings, appSettings.databaseName, retryPolicy);
 
             if(createDatabaseResult.isSuccess)
             {   
 
-                var runSqlScriptsResult = RunSqlScripts(sqlSettings, databaseName, retryPolicy);
+                var runSqlScriptsResult = RunSqlScripts(sqlSettings, appSettings, retryPolicy);
 
                 return new DataAccessResponse{
                     isSuccess = true,
@@ -30,7 +30,7 @@ namespace SqlInitializer
             else{
                 return new DataAccessResponse{
                     isSuccess = false,
-                    errorMessage = "Failed to create database '" + databaseName + "'"
+                    errorMessage = "Failed to create database '" + appSettings.databaseName + "'"
                 };
             }
 
@@ -64,15 +64,13 @@ namespace SqlInitializer
             return new DataAccessResponse { isSuccess = true };
         }
 
-        private static DataAccessResponse RunSqlScripts(SqlSettings sqlSettings, string databaseName, RetryPolicy retryPolicy)
+        private static DataAccessResponse RunSqlScripts(SqlSettings sqlSettings, AppSettings appSettings, RetryPolicy retryPolicy)
         {
             //Connect to '<databaseName>'
                 ReliableSqlConnection sqlConnection = new ReliableSqlConnection(
-                    Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, databaseName),
+                    Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, appSettings.databaseName),
                     retryPolicy);
 
-                //Use a schema name (can be injected by container or used in provisioning scripts)
-                var schemaName = "tenant1001";
 
                 //List of script folders to be run (in order)
                 var scriptsOrder = new List<string>();
@@ -95,10 +93,9 @@ namespace SqlInitializer
                         foreach (var s in split)
                         {
                             //REPLACE [schemaname] with schemaName/tenantId/accountID:
-                            var script = s.Replace("#schema#", schemaName);
+                            var script = s.Replace("#schema#", appSettings.schemaName);
 
-                            Console.WriteLine(s);
-                            Initializer.Helpers.SqlExecution.ExecuteNonQueryStatement(s, sqlConnection);
+                            Initializer.Helpers.SqlExecution.ExecuteNonQueryStatement(script, sqlConnection);
                         }
                     }
                 }

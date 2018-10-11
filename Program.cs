@@ -15,8 +15,11 @@ namespace SqlInitializer
 
             Console.WriteLine("Starting initializer...");
        
+            var appSettings = Settings.GetAppSettings();
             var sqlSettings = Settings.GetSqlSettings();
-            var response = Manager.InitializeDatabase(sqlSettings, "Initializer");          
+
+
+            var response = Manager.InitializeDatabase(sqlSettings, appSettings);          
 
             if(response.isSuccess)
             {
