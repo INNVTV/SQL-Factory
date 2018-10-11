@@ -47,19 +47,21 @@ namespace SqlInitializer
                 retryPolicy);
 
             //Create Database:
-            //TODO: Check if database exists!
             var sqlStatement = new StringBuilder();
-            sqlStatement.Append("Create Database ");
+            sqlStatement.Append("IF  NOT EXISTS ");
+            sqlStatement.Append("(SELECT 1 FROM sys.databases WHERE name = N'");
             sqlStatement.Append(databaseName);
+            sqlStatement.Append("') ");
+            sqlStatement.Append("BEGIN ");
+            sqlStatement.Append("CREATE DATABASE ");
+            sqlStatement.Append(databaseName);
+            sqlStatement.Append("END");
 
             SqlCommand sqlCommand = sqlConnectionMaster.CreateCommand();
 			sqlCommand.CommandText = sqlStatement.ToString();
             sqlCommand.Connection.OpenWithRetry();
             int result = sqlCommand.ExecuteNonQueryWithRetry(); // returns Int indicating number of rows affected
             sqlCommand.Connection.Close();
-
-            //Console.WriteLine(result);
-            //TODO: Better way to check if db created
 
             return new DataAccessResponse { isSuccess = true };
         }
