@@ -11,10 +11,9 @@ All SQL scripts are managed within the 'Sql/Scripts' folder. The scripts are run
 * Pre
 * Tables
 * Post
-* Procedures
 * Seeds
 
-This allows you to easily manage all your SQL scripts in sequential batches.
+This allows you to easily manage all your SQL scripts to run in sequential batches.
 
 The 'Sql/Statements' folder is used to run queries against the database after the batched scripts are run.
 

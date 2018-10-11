@@ -71,12 +71,14 @@ namespace SqlInitializer
                     Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, databaseName),
                     retryPolicy);
 
+                //Use a schema name (can be injected by container or used in provisioning scripts)
+                var schemaName = "tenant1001";
+
                 //List of script folders to be run (in order)
                 var scriptsOrder = new List<string>();
                 scriptsOrder.Add("Pre");
                 scriptsOrder.Add("Tables");
                 scriptsOrder.Add("Post");
-                scriptsOrder.Add("Procedures");
                 scriptsOrder.Add("Seeds");
 
                 //Loop through all scripts within each folder and run them against the database connection:
@@ -92,6 +94,9 @@ namespace SqlInitializer
                         var split = SplitSqlStatements(fileData);
                         foreach (var s in split)
                         {
+                            //REPLACE [schemaname] with schemaName/tenantId/accountID:
+                            var script = s.Replace("#schema#", schemaName);
+
                             Console.WriteLine(s);
                             Initializer.Helpers.SqlExecution.ExecuteNonQueryStatement(s, sqlConnection);
                         }
