@@ -1,8 +1,8 @@
 using System;
 using System.Data.SqlClient;
-using SqlInitializer.Models;
+using SqlFactory.Models;
 
-namespace SqlInitializer.Sql.Statements
+namespace SqlFactory.Sql.Statements
 {
     public static class VerificationStatements
     {
@@ -13,7 +13,7 @@ namespace SqlInitializer.Sql.Statements
             string SqlStatement =
                  "IF EXISTS (SELECT name FROM master.sys.databases WHERE name = N'" + appSettings.databaseName + "') SELECT 'true' ELSE SELECT 'false'";
 
-            SqlCommand sqlCommand = new SqlCommand(SqlStatement.ToString(), new SqlConnection(SqlInitializer.Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, "master")));
+            SqlCommand sqlCommand = new SqlCommand(SqlStatement.ToString(), new SqlConnection(Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, "master")));
             sqlCommand.Connection.Open();
             exists = Convert.ToBoolean(sqlCommand.ExecuteScalar());
 
@@ -29,7 +29,7 @@ namespace SqlInitializer.Sql.Statements
             string SqlStatement =
                 "IF OBJECT_ID ('dbo." + tableName + "') IS NOT NULL SELECT 'true' ELSE SELECT 'false'";
 
-            SqlCommand sqlCommand = new SqlCommand(SqlStatement.ToString(), new SqlConnection(SqlInitializer.Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, databaseName)));
+            SqlCommand sqlCommand = new SqlCommand(SqlStatement.ToString(), new SqlConnection(Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, databaseName)));
             sqlCommand.Connection.Open();
             exists = Convert.ToBoolean(sqlCommand.ExecuteScalar());
 

@@ -1,8 +1,8 @@
 using System;
 using System.Text;
-using SqlInitializer.Models;
+using SqlFactory.Models;
 
-namespace SqlInitializer.Initializer.Helpers
+namespace SqlFactory.Helpers
 {
     public class SqlConnectionStrings
     {

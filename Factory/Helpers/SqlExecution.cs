@@ -2,7 +2,7 @@ using System;
 using System.Data.SqlClient;
 using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 
-namespace SqlInitializer.Initializer.Helpers
+namespace SqlFactory.Helpers
 {
     public static class SqlExecution
     {

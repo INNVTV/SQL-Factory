@@ -1,4 +1,4 @@
-namespace SqlInitializer.Models
+namespace SqlFactory.Models
 {
     public class SqlSettings
     {

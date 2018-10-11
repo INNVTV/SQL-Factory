@@ -1,19 +1,19 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using SqlInitializer.Models;
+using SqlFactory.Models;
 using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
 using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 
-namespace SqlInitializer
+namespace SqlFactory
 {
     public static class Manager
     {
         public static DataAccessResponse InitializeDatabase(SqlSettings sqlSettings, AppSettings appSettings)
         {
-            var retryPolicy = Initializer.Helpers.RetryPolicies.GetRetryPolicy();
+            var retryPolicy = Helpers.RetryPolicies.GetRetryPolicy();
 
             var createDatabaseResult = CreateDatabaseOnMaster(sqlSettings, appSettings.databaseName, retryPolicy);
 
@@ -43,7 +43,7 @@ namespace SqlInitializer
         {
             //Connect to 'master'
             ReliableSqlConnection sqlConnectionMaster = new ReliableSqlConnection(
-                Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, "master"),
+                Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, "master"),
                 retryPolicy);
 
             //Create Database:
@@ -55,7 +55,7 @@ namespace SqlInitializer
             sqlStatement.Append("BEGIN ");
             sqlStatement.Append("CREATE DATABASE ");
             sqlStatement.Append(databaseName);
-            sqlStatement.Append("END");
+            sqlStatement.Append(" END");
 
             SqlCommand sqlCommand = sqlConnectionMaster.CreateCommand();
 			sqlCommand.CommandText = sqlStatement.ToString();
@@ -70,7 +70,7 @@ namespace SqlInitializer
         {
             //Connect to '<databaseName>'
                 ReliableSqlConnection sqlConnection = new ReliableSqlConnection(
-                    Initializer.Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, appSettings.databaseName),
+                    Helpers.SqlConnectionStrings.GenerateConnectionString(sqlSettings, appSettings.databaseName),
                     retryPolicy);
 
 
@@ -97,7 +97,7 @@ namespace SqlInitializer
                             //REPLACE [schemaname] with schemaName/tenantId/accountID:
                             var script = s.Replace("#schema#", appSettings.schemaName);
 
-                            Initializer.Helpers.SqlExecution.ExecuteNonQueryStatement(script, sqlConnection);
+                            Helpers.SqlExecution.ExecuteNonQueryStatement(script, sqlConnection);
                         }
                     }
                 }

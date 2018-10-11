@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling;
 using System.Data.SqlClient;
 
-namespace SqlInitializer.Initializer.Helpers
+namespace SqlFactory.Helpers
 {
     internal static class RetryPolicies
     {

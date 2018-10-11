@@ -1,15 +1,15 @@
 ﻿using System;
 using System.IO;
-using SqlInitializer.Models;
+using SqlFactory.Models;
 using System.Threading;
 
-namespace SqlInitializer
+namespace SqlFactory
 {
     class Program
     {
         static void Main(string[] args)
         {   
-            Console.WriteLine("Starting initializer...");
+            Console.WriteLine("Starting factory...");
        
             var appSettings = Settings.GetAppSettings();
             var sqlSettings = Settings.GetSqlSettings();
@@ -18,7 +18,7 @@ namespace SqlInitializer
 
             if(response.isSuccess)
             {
-                Console.WriteLine("Initialization complete!");
+                Console.WriteLine("Factory complete!");
                 //Send message to other microservices...
                 
                 Console.WriteLine("Exiting...");
